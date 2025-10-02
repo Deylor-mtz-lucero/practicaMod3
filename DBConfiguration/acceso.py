@@ -57,9 +57,21 @@ def obtener_datos_usuario(username, password):
         print("Error al consultar la base de datos:", e)
 
 if __name__ == "__main__":
-    print("Inicio de sesión en la base de datos")
+    #print("Inicio de sesión en la base de datos")    
     # Solicitar credenciales al usuario
-    user = input("Ingrese su usuario: ")
-    pwd = getpass.getpass("Ingrese su contraseña: ")#No muestra la contraseña a escribir
+    #user = input("Ingrese su usuario: ")
+    #pwd = getpass.getpass("Ingrese su contraseña: ")#No muestra la contraseña a escribir
     #Consultar base de datos
-    obtener_datos_usuario(user, pwd)
+    #obtener_datos_usuario(user, pwd)
+    #-----------------------
+    print("Insertar datos en la base de datos")    
+    nombreNuevo = input("Ingrese su nombre: ")
+    correoNuevo = input("Ingrese su correo: ")
+    telefonoNuevo = input("Ingrese su teléfono: ")
+    fechaNacimientoNuevo = input("Ingrese su fecha de nacimiento (YYYY-MM-DD): ")
+    userNuevo = input("Ingrese su usuario: ")
+    pwdNuevo = getpass.getpass("Ingrese su contraseña: ")#No muestra la contraseña a escribir
+    #Insertar datos en la base de datos
+    insertar_usuario(nombreNuevo, correoNuevo, telefonoNuevo, fechaNacimientoNuevo, userNuevo, pwdNuevo)
+                               
+
