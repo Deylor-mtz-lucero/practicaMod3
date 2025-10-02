@@ -20,7 +20,7 @@ INSERT INTO usuarios (nombre, correo, telefono, fecha_nacimiento) VALUES
 ('Daniela Flores', 'daniela.flores18@example.com', '1234567807', '1996-03-01'),
 ('Héctor Serrano', 'hector.serrano19@example.com', '1234567808', '1982-02-11'),
 ('Patricia Vega', 'patricia.vega20@example.com', '1234567809', '1990-09-05'),
-('Deyanira Martinez', 'deyaniramartinez@example.com', '1234567811', '1990-09-06');
+('Deyanira Martinez', 'deyaniramartinez@example.com', '1234567811', '1990-09-06'),
 ('Leticia Fernandez', 'letyfe@example.com', '1234567881', '1990-09-07');
 -- Insertar datos en la tabla credenciales
 INSERT INTO credenciales (id_usuario, username, password_hash) VALUES
@@ -44,5 +44,5 @@ INSERT INTO credenciales (id_usuario, username, password_hash) VALUES
 (18, 'daniela.flores18', 'hash_daniela_flores'),
 (19, 'hector.serrano19', 'hash_hector_serrano'),
 (20, 'patricia.vega20', 'hash_patricia_vega'),
-(21, 'deyanira.mtz21', 'hash_deyanira_mtz');
+(21, 'deyanira.mtz21', 'hash_deyanira_mtz'),
 (22, 'lety.mtz21', 'hash_lety_mtz');
