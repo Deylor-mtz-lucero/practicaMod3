@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_USER: Admin # Usuario de la base de datos
       POSTGRES_PASSWORD: p4ssw0rdDB # Contraseña del usuario
-      POSTGRES_DB: credencialUsuario # Nombre de la base de datos no me lo quiere tomar
+      #POSTGRES_DB: credencialUsuario # Nombre de la base de datos no me lo quiere tomar
     volumes:
       # Espacio donde los datos se conservarán, al detener el contenedor.
       - postgres_data:/var/lib/postgresql/data 
