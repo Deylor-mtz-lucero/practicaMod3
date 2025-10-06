@@ -56,6 +56,50 @@ def obtener_datos_usuario(username, password):
     except Exception as e:
         print("Error al consultar la base de datos:", e)
 
+def insertar_usuario(nombre, correo, telefono, fecha_nacimiento, username, password):
+    #Inserta un nuevo usuario y sus credenciales en la base de datos.
+    conn = conectar_db()
+    if not conn:
+        return
+    try:
+        cursor = conn.cursor()
+        # Insertar en la tabla usuarios
+        insert_usuario_query = """
+        INSERT INTO usuarios (nombre, correo, telefono, fecha_nacimiento)
+        VALUES (%s, %s, %s, %s) RETURNING id_usuario;
+        """
+        cursor.execute(insert_usuario_query, (nombre, correo, telefono, fecha_nacimiento))
+        #Obtener el id_usuario generado
+        id_usuario = cursor.fetchone()[0]  #con el puro parentesis se obtiene una tupla, y ya con [0] se obtiene el valor
+
+        # Insertar en la tabla credenciales
+        insert_credenciales_query = """
+        INSERT INTO credenciales (id_usuario, username, password_hash)
+        VALUES (%s, %s, %s);
+        """
+        cursor.execute(insert_credenciales_query, (id_usuario, username, password))
+        # Confirmar los cambios en la base de datos
+        conn.commit()
+        print("\nEl usuario y credenciales insertados correctamente.")
+        cursor.close()
+        conn.close()
+    #Cachar cualquier error y cerrar la conexión
+    except Exception as e:
+        # Si hay un error, deshacer los cambios
+        #Realmente no es necesario porque al cerrar la conexión sin commit, se deshacen los cambios
+        conn.rollback()
+        conn.close()
+        print("Error al insertar en la base de datos:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
+        
+
+
+
+
+
 if __name__ == "__main__":
     #print("Inicio de sesión en la base de datos")    
     # Solicitar credenciales al usuario
