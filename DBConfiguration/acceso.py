@@ -96,7 +96,35 @@ def insertar_usuario(nombre, correo, telefono, fecha_nacimiento, username, passw
             conn.close()
         
 
-
+def actualizar_correo(id_usuario, nuevo_correo):
+    #Actualiza el correo de un usuario en la base de datos.
+    conn = conectar_db()
+    if not conn:
+        return
+    try:
+        cursor = conn.cursor()
+        #Query de actualización
+        update_query = """
+        UPDATE usuarios
+        SET correo = %s
+        WHERE id_usuario = %s;
+        """
+        cursor.execute(update_query, (nuevo_correo, id_usuario))
+        conn.commit()
+        if cursor.rowcount > 0:
+            print("\nCorreo actualizado correctamente.")
+        else:
+            print("\nNo se encontró el usuario con el ID proporcionado.")
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        print("Error al actualizar el correo:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
 
 
 
@@ -116,6 +144,13 @@ if __name__ == "__main__":
     userNuevo = input("Ingrese su usuario: ")
     pwdNuevo = getpass.getpass("Ingrese su contraseña: ")#No muestra la contraseña a escribir
     #Insertar datos en la base de datos
-    insertar_usuario(nombreNuevo, correoNuevo, telefonoNuevo, fechaNacimientoNuevo, userNuevo, pwdNuevo)
+    #insertar_usuario(nombreNuevo, correoNuevo, telefonoNuevo, fechaNacimientoNuevo, userNuevo, pwdNuevo)
+    print("Actualizar correo")
+    id_usuario = input("Ingrese el ID de usuario que deseas modificar el correo: ")
+    nuevoCorreo = input("Ingrese su nuevo correo: ")
+    actualizar_correo(id_usuario, nuevoCorreo)
+    print("Eliminar usuario")
+    id_usuario_eliminar = input("Ingrese el ID de usuario que deseas eliminar: ")
+    eliminar_usuario(id_usuario_eliminar)
                                
 
