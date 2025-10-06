@@ -126,6 +126,40 @@ def actualizar_correo(id_usuario, nuevo_correo):
             cursor.close()
             conn.close()
 
+def eliminar_usuario(id_usuario):
+    #Elimina un usuario y sus credenciales de la base de datos.
+    conn = conectar_db()
+    if not conn:
+        return
+    try:
+        cursor = conn.cursor()
+        #Eliminar credenciales primero por la clave foránea
+        delete_credenciales_query = """
+        DELETE FROM credenciales
+        WHERE id_usuario = %s;
+        """
+        cursor.execute(delete_credenciales_query, (id_usuario,))
+        #Eliminar usuario
+        delete_usuario_query = """
+        DELETE FROM usuarios
+        WHERE id_usuario = %s;
+        """
+        cursor.execute(delete_usuario_query, (id_usuario,))
+        conn.commit()
+        if cursor.rowcount > 0:
+            print("\nUsuario eliminado correctamente.")
+        else:
+            print("\nNo se encontró el usuario con el ID proporcionado.")
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        print("Error al eliminar el usuario:", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
 
 
 if __name__ == "__main__":
@@ -149,6 +183,7 @@ if __name__ == "__main__":
     id_usuario = input("Ingrese el ID de usuario que deseas modificar el correo: ")
     nuevoCorreo = input("Ingrese su nuevo correo: ")
     actualizar_correo(id_usuario, nuevoCorreo)
+    
     print("Eliminar usuario")
     id_usuario_eliminar = input("Ingrese el ID de usuario que deseas eliminar: ")
     eliminar_usuario(id_usuario_eliminar)
