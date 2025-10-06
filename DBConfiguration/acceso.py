@@ -199,6 +199,7 @@ def menu():
             print("Opción no válida. Por favor, intente de nuevo.")
 
 if __name__ == "__main__":
+    menu()
     #print("Inicio de sesión en la base de datos")    
     # Solicitar credenciales al usuario
     #user = input("Ingrese su usuario: ")
