@@ -1,14 +1,17 @@
 
 -- comentario
+-- Crear la tabla para almacenar usuarios 
 CREATE TABLE usuarios (
  id_usuario SERIAL PRIMARY KEY,
  nombre VARCHAR(100) NOT NULL,
  correo VARCHAR(255) UNIQUE,
  telefono VARCHAR(15),
- fecha_nacimiento DATE
+ fecha_nacimiento DATE,
+ fecha_alta Date DEFAULT CURRENT_DATE,
+ activo BOOLEAN DEFAULT TRUE 
 );
 
--- Crear la tabla para almacenar usuarios y contraseñas
+-- Crear la tabla para almacenar contraseñas
 CREATE TABLE credenciales (
  id_credencial SERIAL PRIMARY KEY,
  id_usuario INT NOT NULL,
