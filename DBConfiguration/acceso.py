@@ -171,7 +171,7 @@ def menu():
         print("3. Actualizar correo de usuario")
         print("4. Eliminar usuario")
         print("5. Salir")
-        opcion = input("\nIngrese el número de la opción deseada (): ")
+        opcion = input("\nIngrese el número de la opción deseada ( del 1 al 5): ")
         if opcion in ['1', '2', '3', '4', '5']:
             if opcion == '1':
                 user = input("Ingrese su usuario: ")
