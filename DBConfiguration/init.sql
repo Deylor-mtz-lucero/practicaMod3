@@ -21,8 +21,7 @@ CREATE TABLE credenciales (
 );
 -- Crear la tabla catalogo de puestos
 CREATE TABLE puestos (
- id_puesto SERIAL PRIMARY KEY, 
+ id_puesto SERIAL PRIMARY KEY,  
  nombre_puesto VARCHAR(50) UNIQUE NOT NULL, 
- descripcion VARCHAR(255) NOT NULL,
- FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario)
+ descripcion VARCHAR(255) NOT NULL 
 );
