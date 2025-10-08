@@ -1,12 +1,9 @@
--- comentario
-
 -- Crear la tabla catalogo de puestos
 CREATE TABLE puestos (
  id_puesto SERIAL PRIMARY KEY,  
  nombre_puesto VARCHAR(50) UNIQUE NOT NULL, 
  descripcion VARCHAR(255) NOT NULL 
 );
-
 -- Crear la tabla para almacenar usuarios 
 CREATE TABLE usuarios (
  id_usuario SERIAL PRIMARY KEY,

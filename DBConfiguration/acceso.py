@@ -34,9 +34,9 @@ def obtener_datos_usuario(username, password):
         # Verificar si el usuario y contraseña existen en la tabla credenciales
         # tres comillas es para trabajar en párrafos
         query = """
-        SELECT u.id_usuario, u.nombre, u.correo, u.telefono, u.fecha_nacimiento
-        FROM credenciales c
-        JOIN usuarios u ON c.id_usuario = u.id_usuario
+        SELECT u.id_usuario, u.nombre, u.correo, u.telefono, u.fecha_nacimiento,p.nombre_puesto 
+        FROM usuarios u, puestos p, credenciales c WHERE 
+        c.id_usuario = u.id_usuario AND u.id_puesto=p.id_puesto
         WHERE c.username = %s AND c.password_hash = %s;
         """
         cursor.execute(query, (username, password))
@@ -49,6 +49,7 @@ def obtener_datos_usuario(username, password):
             print(f"Correo: {usuario[2]}")
             print(f"Teléfono: {usuario[3]}")
             print(f"Fecha de Nacimiento: {usuario[4]}")
+            print(f"Puesto: {usuario[5]}")
         else:
             print("\nUsuario o contraseña incorrectos.")
         cursor.close()
@@ -56,7 +57,7 @@ def obtener_datos_usuario(username, password):
     except Exception as e:
         print("Error al consultar la base de datos:", e)
 
-def insertar_usuario(nombre, correo, telefono, fecha_nacimiento, username, password):
+def insertar_usuario(nombre, correo, telefono, fecha_nacimiento, username, password,idPuesto):
     #Inserta un nuevo usuario y sus credenciales en la base de datos.
     conn = conectar_db()
     if not conn:
@@ -65,10 +66,10 @@ def insertar_usuario(nombre, correo, telefono, fecha_nacimiento, username, passw
         cursor = conn.cursor()
         # Insertar en la tabla usuarios
         insert_usuario_query = """
-        INSERT INTO usuarios (nombre, correo, telefono, fecha_nacimiento)
-        VALUES (%s, %s, %s, %s) RETURNING id_usuario;
+        INSERT INTO usuarios (nombre, correo, telefono, fecha_nacimiento,id_puesto)
+        VALUES (%s, %s, %s, %s,%s) RETURNING id_usuario;
         """
-        cursor.execute(insert_usuario_query, (nombre, correo, telefono, fecha_nacimiento))
+        cursor.execute(insert_usuario_query, (nombre, correo, telefono, fecha_nacimiento,idPuesto))
         #Obtener el id_usuario generado
         id_usuario = cursor.fetchone()[0]  #con el puro parentesis se obtiene una tupla, y ya con [0] se obtiene el valor
 
@@ -186,16 +187,22 @@ def eliminar_usuario(id_usuario):
         if conn:
             cursor.close()
             conn.close()
-def muestra_usuarios(estado):
+def muestra_puestos():
      #La finalidad de esta funcion es desplagar los datos de los usuarios ordenados por ID
      #Ademas, el usuario puede elegir si despliega todos, solo los activos o solo los dados de baja
 
-     conn = conectar_db()
+    conn = conectar_db()     
     if not conn:
         return
-    try:
-        if estado == 1:  # Quieres desplegar todos
-            
+    try:        
+        cursor = conn.cursor()
+        # Verificar si el usuario y contraseña existen en la tabla credenciales
+        # tres comillas es para trabajar en párrafos
+        query = "SELECT id_puesto,nombre_puesto,descripcion FROM puestos ORDER BY id_puesto"        
+        cursor.execute(query)
+        print ("ID_PUESTO |    NOMBRE DEL PUESTO (DESCRIPCION)")
+        for fila in cursor:
+            print("    " + str(fila[0]) + "     | " + fila[1] + " (" + fila[2]+")")
     except Exception as e:
         conn.rollback()
         conn.close()
@@ -215,9 +222,10 @@ def menu():
         print("3. Actualizar correo de usuario")
         print("4. Eliminar usuario")
         print("5. Eliminar usuario logico(baja)")
+        print("6. Consultar catalogo de puestos")
         print("0. Salir")
-        opcion = input("\nIngrese el número de la opción deseada ( del 0 al 5): ")
-        if opcion in ['0','1', '2', '3', '4', '5']:
+        opcion = input("\nIngrese el número de la opción deseada ( del 0 al 6): ")
+        if opcion in ['0','1', '2', '3', '4', '5','6']:
             if opcion == '1':
                 user = input("Ingrese su usuario: ")
                 pwd = getpass.getpass("Ingrese su contraseña: ")#No muestra la contraseña a escribir
@@ -227,9 +235,10 @@ def menu():
                 correoNuevo = input("Ingrese su correo: ")
                 telefonoNuevo = input("Ingrese su teléfono: ")
                 fechaNacimientoNuevo = input("Ingrese su fecha de nacimiento (YYYY-MM-DD): ")
+                idPuesto=input("Ingrese el ID del puesto (sino lo conoce, consulte la opción 6): ")
                 userNuevo = input("Ingrese su usuario: ")
                 pwdNuevo = getpass.getpass("Ingrese su contraseña: ")#No muestra la contraseña a escribir
-                insertar_usuario(nombreNuevo, correoNuevo, telefonoNuevo, fechaNacimientoNuevo, userNuevo, pwdNuevo)
+                insertar_usuario(nombreNuevo, correoNuevo, telefonoNuevo, fechaNacimientoNuevo, userNuevo, pwdNuevo,idPuesto)
             elif opcion == '3':
                 id_usuario = input("Ingrese el ID de usuario que deseas modificar el correo: ")
                 nuevoCorreo = input("Ingrese su nuevo correo: ")
@@ -240,9 +249,13 @@ def menu():
             elif opcion == '5':
                 id_usuario_baja = input("Ingrese el ID de usuario que deseas dar de baja: ")
                 eliminar_usuario_logico(id_usuario_baja)
+            elif opcion=='6':
+                muestra_puestos()
+                break
             elif opcion == '0':
                 print("Saliendo del programa.")             
                 break
+                           
         else:
             print("Opción no válida. Por favor, intente de nuevo.")
 

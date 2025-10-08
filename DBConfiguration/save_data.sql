@@ -9,7 +9,6 @@ INSERT INTO puestos (nombre_puesto,descripcion) VALUES
 ('Director de área', 'Cargo referente a un nivel salarial 2'),
 ('Director General', 'Cargo referente a un nivel salarial 1');
 
-
 -- Insertar datos en la tabla usuarios
 INSERT INTO usuarios (nombre, correo, telefono, fecha_nacimiento,id_puesto) VALUES
 ('Juan Pérez', 'juan.perez1@example.com', '1234567890', '1985-01-15',1),
