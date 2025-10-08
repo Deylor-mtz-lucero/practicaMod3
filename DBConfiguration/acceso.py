@@ -238,14 +238,14 @@ def muestra_usuarios(activo):
 
 def menu():
     while True:
-        print(" ----   SELECCIÓN DE EJECUCIÓN   ---- ")
         print("\n")
+        print(" ----   SELECCIÓN DE EJECUCIÓN   ---- ")        
         print("1. Iniciar sesión")
         print("2. Insertar nuevo usuario")
         print("3. Actualizar correo de usuario")
         print("4. Eliminar usuario")
-        print("5. Eliminar usuario logico(baja)")
-        print("6. Consultar catalogo de puestos")
+        print("5. Eliminar usuario lógico(baja)")
+        print("6. Consultar catálogo de puestos")
         print("7. Consultar usuarios activos")
         print("8. Consultar usuarios inactivos")
         print("0. Salir")
