@@ -44,7 +44,7 @@ def obtener_datos_usuario(username, password):
         usuario = cursor.fetchone()
 
         if usuario:
-            print(usuario)
+            #print(usuario)
             print("\nDatos del usuario encontrado:")
             print(f"ID: {usuario[0]}")
             print(f"Nombre: {usuario[1]}")
@@ -226,7 +226,8 @@ def muestra_usuarios(activo):
         cursor.execute(query,(activo,))
         print ("ID |NOMBRE       | CORREO     |  TELEFONO  |  FECHA_NACIMIENTO | USERNAME   |    PUESTO   ")
         for fila in cursor:
-            print(str(fila[0]) + " | " + fila[1] + " | "  + fila[2] + " | "  + fila[3] + " | "  + str(fila[4]) + " | "  + fila[5] + " | "  + fila[6])
+            print(str(fila[0]) + " | " + fila[1] + " | "  + fila[2] + " | "  + fila[3] + " | "  + str(fila[4]) 
+                  + " | "  + fila[5] + " | "  + fila[6])
     except Exception as e:
         conn.rollback()
         conn.close()
