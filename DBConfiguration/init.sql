@@ -1,4 +1,12 @@
 -- comentario
+
+-- Crear la tabla catalogo de puestos
+CREATE TABLE puestos (
+ id_puesto SERIAL PRIMARY KEY,  
+ nombre_puesto VARCHAR(50) UNIQUE NOT NULL, 
+ descripcion VARCHAR(255) NOT NULL 
+);
+
 -- Crear la tabla para almacenar usuarios 
 CREATE TABLE usuarios (
  id_usuario SERIAL PRIMARY KEY,
@@ -19,9 +27,4 @@ CREATE TABLE credenciales (
  password_hash VARCHAR(255) NOT NULL,
  FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario)
 );
--- Crear la tabla catalogo de puestos
-CREATE TABLE puestos (
- id_puesto SERIAL PRIMARY KEY,  
- nombre_puesto VARCHAR(50) UNIQUE NOT NULL, 
- descripcion VARCHAR(255) NOT NULL 
-);
+
