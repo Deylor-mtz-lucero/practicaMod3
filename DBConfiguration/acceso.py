@@ -34,15 +34,17 @@ def obtener_datos_usuario(username, password):
         # Verificar si el usuario y contraseña existen en la tabla credenciales
         # tres comillas es para trabajar en párrafos
         query = """
-        SELECT u.id_usuario, u.nombre, u.correo, u.telefono, u.fecha_nacimiento,p.nombre_puesto 
-        FROM usuarios u, puestos p, credenciales c WHERE 
-        c.id_usuario = u.id_usuario AND u.id_puesto=p.id_puesto
-        WHERE c.username = %s AND c.password_hash = %s;
+        SELECT u.id_usuario, u.nombre, u.correo, u.telefono, u.fecha_nacimiento, p.nombre_puesto 
+        FROM usuarios u, puestos p, credenciales c 
+        WHERE c.id_usuario = u.id_usuario AND 
+        u.id_puesto=p.id_puesto AND u.activo=True AND
+        c.username = %s AND c.password_hash = %s;
         """
         cursor.execute(query, (username, password))
         usuario = cursor.fetchone()
 
         if usuario:
+            print(usuario)
             print("\nDatos del usuario encontrado:")
             print(f"ID: {usuario[0]}")
             print(f"Nombre: {usuario[1]}")
@@ -51,7 +53,7 @@ def obtener_datos_usuario(username, password):
             print(f"Fecha de Nacimiento: {usuario[4]}")
             print(f"Puesto: {usuario[5]}")
         else:
-            print("\nUsuario o contraseña incorrectos.")
+            print("\nUsuario o contraseña incorrectos. O usuario dado de baja")
         cursor.close()
         conn.close()
     except Exception as e:
@@ -135,8 +137,8 @@ def eliminar_usuario_logico(id_usuario):
     try:
         cursor = conn.cursor()
         #Query de actualización
-        update_query = "UPDATE usuarios SET activo = false WHERE id_usuario = %s";    
-        cursor.execute(update_query, (id_usuario))
+        update_query = "UPDATE usuarios SET activo = False WHERE id_usuario = %s";            
+        cursor.execute(update_query, (id_usuario,))
         conn.commit()
         if cursor.rowcount > 0:
             print("\nUsuario dado de baja correctamente.")
@@ -147,7 +149,7 @@ def eliminar_usuario_logico(id_usuario):
     except Exception as e:
         conn.rollback()
         conn.close()
-        print("Error al actualizar el estado del usuario:", e)
+        print("Error al dar de baja el usuario con ID = "+id_usuario+":", e)
     finally:
         if conn:
             cursor.close()
@@ -187,17 +189,13 @@ def eliminar_usuario(id_usuario):
         if conn:
             cursor.close()
             conn.close()
-def muestra_puestos():
-     #La finalidad de esta funcion es desplagar los datos de los usuarios ordenados por ID
-     #Ademas, el usuario puede elegir si despliega todos, solo los activos o solo los dados de baja
 
+def muestra_puestos():
     conn = conectar_db()     
     if not conn:
         return
     try:        
-        cursor = conn.cursor()
-        # Verificar si el usuario y contraseña existen en la tabla credenciales
-        # tres comillas es para trabajar en párrafos
+        cursor = conn.cursor()       
         query = "SELECT id_puesto,nombre_puesto,descripcion FROM puestos ORDER BY id_puesto"        
         cursor.execute(query)
         print ("ID_PUESTO |    NOMBRE DEL PUESTO (DESCRIPCION)")
@@ -206,12 +204,37 @@ def muestra_puestos():
     except Exception as e:
         conn.rollback()
         conn.close()
-        print("Error al eliminar el usuario:", e)
+        print("Error al mostrar puestos: ", e)
     finally:
         if conn:
             cursor.close()
             conn.close()
 
+def muestra_usuarios(activo):
+    conn = conectar_db()     
+    if not conn:
+        return
+    try:        
+        cursor = conn.cursor()        
+        query = """
+        SELECT u.id_usuario, u.nombre, u.correo, u.telefono, u.fecha_nacimiento, c.username, p.nombre_puesto 
+        FROM usuarios u, puestos p, credenciales c 
+        WHERE c.id_usuario = u.id_usuario AND 
+        u.id_puesto=p.id_puesto AND u.activo=%s 
+        ORDER BY u.id_usuario
+        """   
+        cursor.execute(query,(activo,))
+        print ("ID |NOMBRE       | CORREO     |  TELEFONO  |  FECHA_NACIMIENTO | USERNAME   |    PUESTO   ")
+        for fila in cursor:
+            print(str(fila[0]) + " | " + fila[1] + " | "  + fila[2] + " | "  + fila[3] + " | "  + str(fila[4]) + " | "  + fila[5] + " | "  + fila[6])
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        print("Error al mostrar usuarios: ", e)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
 
 def menu():
     while True:
@@ -223,9 +246,11 @@ def menu():
         print("4. Eliminar usuario")
         print("5. Eliminar usuario logico(baja)")
         print("6. Consultar catalogo de puestos")
+        print("7. Consultar usuarios activos")
+        print("8. Consultar usuarios inactivos")
         print("0. Salir")
-        opcion = input("\nIngrese el número de la opción deseada ( del 0 al 6): ")
-        if opcion in ['0','1', '2', '3', '4', '5','6']:
+        opcion = input("\nIngrese el número de la opción deseada ( del 0 al 8): ")
+        if opcion in ['0','1', '2', '3', '4', '5','6','7','8']:
             if opcion == '1':
                 user = input("Ingrese su usuario: ")
                 pwd = getpass.getpass("Ingrese su contraseña: ")#No muestra la contraseña a escribir
@@ -251,7 +276,10 @@ def menu():
                 eliminar_usuario_logico(id_usuario_baja)
             elif opcion=='6':
                 muestra_puestos()
-                break
+            elif opcion=='7':
+                muestra_usuarios('True')
+            elif opcion=='8':
+                muestra_usuarios('False')                
             elif opcion == '0':
                 print("Saliendo del programa.")             
                 break
